@@ -1,0 +1,49 @@
+version: '3'
+services:
+  #Event-store
+  eventstore:
+    image: ghcr.io/eventstore/eventstore:20.6.1-alpha.0.69-arm64v8
+    ports:
+      - '2113:2113'
+      - '1113:1113'
+    environment:
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_RUN_PROJECTIONS=None
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=false
+    networks:
+      - eventstore
+  gateway:
+    container_name: gateway-service
+    build: ./gateway
+    ports:
+      - '3000:3000'
+    volumes:
+      - './gateway:/app'
+      - '/app/node_modules'
+    networks:
+      - account
+  #Account
+  postgres-account:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_PASSWORD: padd
+      POSTGRES_USER: uss
+    networks:
+      - account
+  account:
+    container_name: account-service
+    build: ./account
+    volumes:
+      - './account:/app'
+      - '/app/node_modules'
+      - './shared:/app/src/shared'
+    networks:
+      - eventstore
+      - account
+    depends_on:
+      - postgres-account
+      - eventstore
+
+networks:
+  eventstore:
+  account:

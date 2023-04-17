@@ -1,0 +1,27 @@
+{
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-base",
+    "airbnb-typescript/base"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "unused-imports",
+    "import-newlines"
+  ],
+  "rules": {
+    "unused-imports/no-unused-imports": 2,
+    "import/prefer-default-export": 0,
+    "import-newlines/enforce": ["error", 3],
+    "max-classes-per-file": 0
+  }
+}
