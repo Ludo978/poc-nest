@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - deploy
+    paths:
+      - "account/**"
+
+jobs:
+  build-account:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Checkout GitHub Action
+        uses: actions/checkout@master
+
+      - name: Set version var
+        id: vars
+        run: echo ::set-output name=version::$(git rev-parse --short HEAD)
+
+      - run: |
+          docker build . -f Dockerfile.prod --build-arg service_name=account -t back-account:${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.version }}
