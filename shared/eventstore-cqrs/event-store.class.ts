@@ -64,49 +64,6 @@ export class EventStore {
     );
   }
 
-  // async connect() {
-  //   this.client = new EventStoreDBClient(
-  //     // { endpoint: 'escluster.net:2113' },
-  //     this.endpoint,
-  //     this.settings,
-  //     { username: 'admin', password: 'changeit' }
-  //   );
-
-  //   // this.client = await EventStoreDBClient.connectionString(
-  //   //   'esdb+discover://escluster.net:2113'
-  //   // );
-  //   // console.log(this.client)
-  //   // const event = jsonEvent<JSONEventType>({
-  //   //   type: "TestEvent",
-  //   //   data: {
-  //   //     entityId: 123,
-  //   //     importantData: "I wrote my first event!",
-  //   //   },
-  //   // });
-  //   // console.log(await this.client.appendToStream("coucou", event));
-  //   // console.log(await this.client.createPersistentSubscription('$ce-accountDto',
-  //   // 'account',   persistentSubscriptionSettingsFromDefaults()    ))
-  //   // console.log(await this.client.connectToPersistentSubscription(
-  //   //   "$ce-accountDto",
-  //   //   "account"
-  //   // ))
-  //   this.connection = this.client;
-  //   // this.connection = createConnection(this.settings, this.endpoint);
-  //   // this.connection.connect();
-  //   // this.connection.on('connected', () => {
-  //   //   this.logger.log('Connection to EventStore established!');
-  //   //   this.retryAttempts = 0;
-  //   //   this.isConnected = true;
-  //   // });
-  //   // this.connection.on('closed', (e) => {
-  //   //   console.log(e)
-  //   //   this.logger.error(`Connection to EventStore closed! reconnecting attempt(${this.retryAttempts})...`);
-  //   //   this.retryAttempts += 1;
-  //   //   this.isConnected = false;
-  //   //   // this.connect();
-  //   // });
-  // }
-
   getConnection() {
     return this.connection;
   }

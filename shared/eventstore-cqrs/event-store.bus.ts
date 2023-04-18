@@ -190,7 +190,6 @@ export class EventStoreBus {
         .on('confirmation', () => this.onPersistentProcessingStarted(stream, subscriptionName, resolved));
       return resolved;
     } catch (err) {
-      console.log('Error');
       this.logger.error(
         `[${stream}][${subscriptionName}] ${err.message}`,
         err.stack,

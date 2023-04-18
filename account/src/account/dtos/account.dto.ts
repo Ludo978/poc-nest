@@ -1,5 +1,4 @@
 import { Field, ObjectType, createUnionType } from '@nestjs/graphql';
-import { GraphqlError } from 'src/shared/types';
 
 export type AccountDto = {
   id: string;
@@ -9,6 +8,7 @@ export type AccountDto = {
   lastname: string;
   email: string;
   password: string;
+  ordersId: string[];
 };
 
 export type AccountsDto = {
@@ -22,11 +22,48 @@ export class AuthPayloadDto {
     token: string;
 }
 
+@ObjectType()
+export class GraphqlErrorAccount {
+  @Field()
+  readonly success!: boolean;
+
+  @Field()
+  readonly message!: string;
+
+  @Field()
+  readonly code!: number;
+}
+
+@ObjectType()
+export class SuccessAccount {
+  @Field()
+  readonly success!: boolean;
+
+  @Field()
+  readonly message!: string;
+
+  @Field()
+  readonly id!: string;
+}
+
+export type TokenPayloadDto = {
+  readonly accountId: string;
+};
+
+export const SuccessOrErrorUnion = createUnionType({
+  name: 'SuccessOrError',
+  types: () => [SuccessAccount, GraphqlErrorAccount],
+  resolveType: (value) => {
+    if (value.success === true) return SuccessAccount;
+    return GraphqlErrorAccount;
+  },
+});
+
 export const AuthPayloadOrErrorUnion = createUnionType({
   name: 'AuthPayloadOrErrorUnion',
-  types: () => [AuthPayloadDto, GraphqlError],
+  types: () => [AuthPayloadDto, GraphqlErrorAccount],
   resolveType: (value) => {
     if (value.token) return AuthPayloadDto;
-    return GraphqlError;
+    return GraphqlErrorAccount;
   },
 });

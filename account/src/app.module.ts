@@ -8,6 +8,8 @@ import { AccountModule } from './account/account.module';
 import { AccountCreatedEvent } from './account/events/impl/account-created.event';
 import { AccountUpdatedEvent } from './account/events/impl/account-updated.event';
 import { AccountDeletedEvent } from './account/events/impl/account-deleted.event';
+import { OrderCreatedEvent } from './account/events/impl/order-created.event';
+import { OrderDeletedEvent } from './account/events/impl/order-deleted.event';
 
 export const eventStoreBusConfig: EventStoreBusConfig = {
   subscriptions: [
@@ -16,11 +18,18 @@ export const eventStoreBusConfig: EventStoreBusConfig = {
       stream: '$ce-accountDto',
       persistentSubscriptionName: 'account',
     },
+    {
+      type: EventStoreSubscriptionType.Persistent,
+      stream: '$ce-orderDto',
+      persistentSubscriptionName: 'account',
+    },
   ],
   events: {
     AccountCreatedEvent,
     AccountUpdatedEvent,
     AccountDeletedEvent,
+    OrderCreatedEvent,
+    OrderDeletedEvent,
   },
 };
 

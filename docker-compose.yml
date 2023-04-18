@@ -22,6 +22,8 @@ services:
       - '/app/node_modules'
     networks:
       - account
+      - order
+      - product
   #Account
   postgres-account:
     image: 'postgres:latest'
@@ -43,7 +45,51 @@ services:
     depends_on:
       - postgres-account
       - eventstore
+  #Order
+  postgres-order:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_PASSWORD: padd
+      POSTGRES_USER: uss
+    networks:
+      - order
+  order:
+    container_name: order-service
+    build: ./order
+    volumes:
+      - './order:/app'
+      - '/app/node_modules'
+      - './shared:/app/src/shared'
+    networks:
+      - eventstore
+      - order
+    depends_on:
+      - postgres-order
+      - eventstore
+  #Product
+  postgres-product:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_PASSWORD: padd
+      POSTGRES_USER: uss
+    networks:
+      - product
+  product:
+    container_name: product-service
+    build: ./product
+    volumes:
+      - './product:/app'
+      - '/app/node_modules'
+      - './shared:/app/src/shared'
+    networks:
+      - eventstore
+      - product
+    depends_on:
+      - postgres-product
+      - eventstore
 
 networks:
   eventstore:
   account:
+  order:
+  product:

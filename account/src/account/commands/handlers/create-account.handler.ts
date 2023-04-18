@@ -1,7 +1,7 @@
 import { EventPublisher, ICommandHandler, CommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { Success, GraphqlError } from 'src/shared/types';
+import { SuccessAccount, GraphqlErrorAccount } from '../../dtos/account.dto';
 import { CreateAccountCommand } from '../impl/create-account.command';
 import { AccountRepository } from '../../repository/account.repository';
 import {
@@ -21,7 +21,7 @@ implements ICommandHandler<CreateAccountCommand> {
 
   async execute(
     command: CreateAccountCommand,
-  ): Promise<Success | GraphqlError> {
+  ): Promise<SuccessAccount | GraphqlErrorAccount> {
     const { accountInput, creatorId } = command;
     const id = uuidv4();
     Logger.log(`${creatorId} created ${id}`, 'CreateAccountCommand');

@@ -1,6 +1,6 @@
 import { EventPublisher, ICommandHandler, CommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
-import { Success, GraphqlError } from 'src/shared/types';
+import { SuccessAccount, GraphqlErrorAccount } from 'src/account/dtos/account.dto';
 import { DeleteAccountCommand } from '../impl/delete-account.command';
 import { AccountRepository } from '../../repository/account.repository';
 import {
@@ -20,7 +20,7 @@ implements ICommandHandler<DeleteAccountCommand> {
 
   async execute(
     command: DeleteAccountCommand,
-  ): Promise<Success | GraphqlError> {
+  ): Promise<SuccessAccount | GraphqlErrorAccount> {
     const { accountId, creatorId } = command;
     Logger.log(`${creatorId} deleted ${accountId}`, 'DeleteAccountCommand');
     try {

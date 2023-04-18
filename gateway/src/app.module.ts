@@ -30,7 +30,7 @@ const handleAuth = ({ req }) => {
       const token = getToken(req.headers.authorization);
       const decoded: any = decodeToken(token);
       return {
-        userId: decoded.userId,
+        userId: decoded.id,
         authorization: `${req.headers.authorization}`,
       };
     }
@@ -57,6 +57,8 @@ const handleAuth = ({ req }) => {
           supergraphSdl: new IntrospectAndCompose({
             subgraphs: [
               { name: 'Account', url: 'http://account-service:3000/graphql' },
+              { name: 'Order', url: 'http://order-service:3000/graphql' },
+              { name: 'Product', url: 'http://product-service:3000/graphql' },
             ],
           }),
         },

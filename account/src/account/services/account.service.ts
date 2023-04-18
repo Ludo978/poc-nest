@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Success, GraphqlError } from 'src/shared/types';
+import { SuccessAccount, GraphqlErrorAccount } from 'src/account/dtos/account.dto';
 import { AccountsDto, AuthPayloadDto } from '../dtos/account.dto';
 import { AccountInputDto, LoginInputDto, UpdateAccountInputDto } from '../inputs/account.input';
 import { FilterAccountInputDto } from '../inputs/filter.input';
@@ -17,7 +17,7 @@ export class AccountService {
     private readonly queryBus: QueryBus,
   ) { }
 
-  async create(accountInput: AccountInputDto, creatorId: string): Promise<Success | GraphqlError> {
+  async create(accountInput: AccountInputDto, creatorId: string): Promise<SuccessAccount | GraphqlErrorAccount> {
     return this.commandBus.execute(new CreateAccountCommand(accountInput, creatorId));
   }
 
@@ -28,15 +28,15 @@ export class AccountService {
   async update(
     accountInput: UpdateAccountInputDto,
     creatorId: string,
-  ): Promise<Success | GraphqlError> {
+  ): Promise<SuccessAccount | GraphqlErrorAccount> {
     return this.commandBus.execute(new UpdateAccountCommand(accountInput, creatorId));
   }
 
-  async delete(accountId: string, creatorId: string): Promise<Success | GraphqlError> {
+  async delete(accountId: string, creatorId: string): Promise<SuccessAccount | GraphqlErrorAccount> {
     return this.commandBus.execute(new DeleteAccountCommand(accountId, creatorId));
   }
 
-  async login(account: LoginInputDto): Promise<AuthPayloadDto | GraphqlError> {
+  async login(account: LoginInputDto): Promise<AuthPayloadDto | GraphqlErrorAccount> {
     return this.queryBus.execute(new LoginQuery(account));
   }
 }

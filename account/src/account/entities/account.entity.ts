@@ -42,6 +42,9 @@ export class Account extends AggregateRoot {
   @Field()
     password: string;
 
+  @Field(() => [String])
+    ordersId: string[];
+
   async init() {
     const account = await this.prismaService.account.findUnique({
       where: {
@@ -60,9 +63,7 @@ export class Account extends AggregateRoot {
     const account = await this.prismaService.account.findFirst({
       where: { email: this.email },
     });
-    console.log('account', account);
     if (account) throw new Error('Account already exists');
-    console.log('lalalal');
     this.apply(
       new AccountCreatedEvent(
         new Event(
@@ -72,6 +73,7 @@ export class Account extends AggregateRoot {
             lastname: this.lastname,
             email: this.email,
             password: await bcrypt.hash(this.password, 10),
+            ordersId: [],
           },
           creatorAccountId,
         ),
@@ -102,6 +104,7 @@ export class Account extends AggregateRoot {
             lastname: data.lastname || this.lastname,
             email: data.email || this.email,
             password: data.password ? await bcrypt.hash(data.password, 10) : this.password,
+            ordersId: this.ordersId,
           },
           creatorAccountId,
         ),
@@ -109,7 +112,7 @@ export class Account extends AggregateRoot {
     );
   }
 
-  async updatePersist(data: AccountDto): Promise<void> {
+  async updatePersist(data: Partial<AccountDto>): Promise<void> {
     try {
       await this.prismaService.account.update({
         where: { id: this.id },
@@ -130,6 +133,7 @@ export class Account extends AggregateRoot {
             lastname: this.lastname,
             email: this.email,
             password: this.password,
+            ordersId: this.ordersId,
           },
           creatorAccountId,
         ),

@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GraphqlError } from 'src/shared/types';
+import { GraphqlErrorAccount } from 'src/account/dtos/account.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AccountsDto, AuthPayloadDto } from '../dtos/account.dto';
 import { Account } from '../entities/account.entity';
 import { AccountInputDto, LoginInputDto, UpdateAccountInputDto } from '../inputs/account.input';
 import { FilterAccountInputDto, filtersObjectFromFilters } from '../inputs/filter.input';
-import { Event } from '../entities/event.entity';
+import { Event, EventOrder } from '../entities/event.entity';
 
 @Injectable()
 export class AccountRepository {
@@ -22,11 +22,8 @@ export class AccountRepository {
     creatorAccountId: string,
   ) {
     const account = new Account(id, this.prismaService);
-    console.log('1');
     account.setDataNewAccount(accountInput);
-    console.log('2');
     await account.create(creatorAccountId);
-    console.log('3', account.id);
     return account;
   }
 
@@ -76,7 +73,7 @@ export class AccountRepository {
     return { accounts, count };
   }
 
-  async login(input: LoginInputDto): Promise<AuthPayloadDto | GraphqlError> {
+  async login(input: LoginInputDto): Promise<AuthPayloadDto | GraphqlErrorAccount> {
     const account = await this.prismaService.account.findUnique({
       where: {
         email: input.email,
@@ -95,5 +92,27 @@ export class AccountRepository {
     );
 
     return { token };
+  }
+
+  async handleOrderCreated(event: EventOrder) {
+    try {
+      const account = new Account(event.object.accountId, this.prismaService);
+      await account.init();
+      await account.updatePersist({ ordersId: [...account.ordersId, event.object.id] });
+    } catch (error) {
+      Logger.error(`${error.message} ${event.object.accountId}`, 'HandleOrderCreated');
+    }
+  }
+
+  async handleOrderDeleted(event: EventOrder) {
+    try {
+      const account = new Account(event.object.accountId, this.prismaService);
+      await account.init();
+      await account.updatePersist({
+        ordersId: account.ordersId.filter((id) => id !== event.object.id),
+      });
+    } catch (error) {
+      Logger.error(`${error.message} ${event.object.accountId}`, 'HandleOrderDeleted');
+    }
   }
 }

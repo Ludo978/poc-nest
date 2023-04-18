@@ -5,12 +5,16 @@ import {
   Args,
   Context,
 } from '@nestjs/graphql';
-import { TokenPayloadDto, SuccessOrErrorUnion } from 'src/shared/types';
 import { Accounts } from '../entities/account.entity';
 import { AccountService } from '../services/account.service';
 import { AccountInputDto, LoginInputDto, UpdateAccountInputDto } from '../inputs/account.input';
 import { FilterAccountInputDto } from '../inputs/filter.input';
-import { AccountsDto, AuthPayloadOrErrorUnion } from '../dtos/account.dto';
+import {
+  AccountsDto,
+  AuthPayloadOrErrorUnion,
+  TokenPayloadDto,
+  SuccessOrErrorUnion,
+} from '../dtos/account.dto';
 
 @Resolver()
 export class AccountResolver {
@@ -26,25 +30,25 @@ export class AccountResolver {
   @Mutation(() => SuccessOrErrorUnion)
   async createAccount(
     @Args('account') account: AccountInputDto,
-      @Context('tokenPayload') tokenPayload: TokenPayloadDto,
+      @Context('userId') userId: string,
   ): Promise<typeof SuccessOrErrorUnion> {
-    return this.accountService.create(account, tokenPayload.accountId);
+    return this.accountService.create(account, userId);
   }
 
   @Mutation(() => SuccessOrErrorUnion)
   async updateAccount(
     @Args('account') account: UpdateAccountInputDto,
-      @Context('tokenPayload') tokenPayload: TokenPayloadDto,
+      @Context('userId') userId: string,
   ): Promise<typeof SuccessOrErrorUnion> {
-    return this.accountService.update(account, tokenPayload.accountId);
+    return this.accountService.update(account, userId);
   }
 
   @Mutation(() => SuccessOrErrorUnion)
   async deleteAccount(
     @Args('accountId') accountId: string,
-      @Context('tokenPayload') tokenPayload: TokenPayloadDto,
+      @Context('userId') userId: string,
   ): Promise<typeof SuccessOrErrorUnion> {
-    return this.accountService.delete(accountId, tokenPayload.accountId);
+    return this.accountService.delete(accountId, userId);
   }
 
   @Query(() => AuthPayloadOrErrorUnion)
