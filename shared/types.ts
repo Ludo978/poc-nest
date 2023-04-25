@@ -38,9 +38,6 @@ export class SortInputDto {
 @InputType()
 export class FilterInputDto {
   @Field({ nullable: true })
-  readonly mine?: boolean;
-
-  @Field({ nullable: true })
   readonly pagination?: PaginationInputDto;
 
   @Field({ nullable: true })

@@ -5,6 +5,9 @@ import { FilterInputDto } from '../../shared/types';
 export class QueryOrderInputDto {
   @Field(() => [String], { nullable: true })
   readonly ids?: string[];
+
+  @Field({ nullable: true })
+  readonly accountId?: string;
 }
 
 @InputType()
